@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tool Mã Hoá - DevHub Việt</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e2e;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #282a36;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      padding: 20px;
+    }
+    textarea {
+      width: 100%;
+      height: 120px;
+      margin-top: 10px;
+      font-size: 16px;
+      background: #44475a;
+      color: #f8f8f2;
+      border: none;
+      padding: 10px;
+    }
+    select, button {
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 16px;
+      border: none;
+      background: #50fa7b;
+      color: #282a36;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background: #38d774;
+    }
+    .result {
+      background: #44475a;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #ff79c6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Công Cụ Mã Hóa / Giải Mã Hoá</h1>
+
+    <label for="method">Chọn phương pháp:</label>
+    <select id="method">
+      <option value="base64">Base64</option>
+      <option value="url">URL Encode</option>
+      <option value="hex">Hex</option>
+      <option value="binary">Binary</option>
+    </select>
+
+    <label for="inputText">Nhập nội dung:</label>
+    <textarea id="inputText" placeholder="Nhập văn bản cần mã hóa/giải mã..."></textarea>
+
+    <button onclick="encode()">Mã Hóa</button>
+    <button onclick="decode()">Giải Mã</button>
+
+    <h3>Kết quả:</h3>
+    <div class="result" id="result"></div>
+
+    <button onclick="copyResult()">Sao Chép Kết Quả</button>
+
+    <div class="footer">CODE BY: Quang Định DEV</div>
+  </div>
+
+  <script>
+    function encode() {
+      const method = document.getElementById('method').value;
+      const input = document.getElementById('inputText').value;
+      let result = '';
+      try {
+        if (method === 'base64') {
+          result = btoa(unescape(encodeURIComponent(input)));
+        } else if (method === 'url') {
+          result = encodeURIComponent(input);
+        } else if (method === 'hex') {
+          result = Array.from(input).map(c => c.charCodeAt(0).toString(16)).join(' ');
+        } else if (method === 'binary') {
+          result = Array.from(input).map(c => c.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
+        }
+      } catch (e) {
+        result = 'Lỗi khi mã hóa!';
+      }
+      document.getElementById('result').innerText = result;
+    }
+
+    function decode() {
+      const method = document.getElementById('method').value;
+      const input = document.getElementById('inputText').value;
+      let result = '';
+      try {
+        if (method === 'base64') {
+          result = decodeURIComponent(escape(atob(input)));
+        } else if (method === 'url') {
+          result = decodeURIComponent(input);
+        } else if (method === 'hex') {
+          result = input.split(' ').map(h => String.fromCharCode(parseInt(h, 16))).join('');
+        } else if (method === 'binary') {
+          result = input.split(' ').map(b => String.fromCharCode(parseInt(b, 2))).join('');
+        }
+      } catch (e) {
+        result = 'Lỗi khi giải mã!';
+      }
+      document.getElementById('result').innerText = result;
+    }
+
+    function copyResult() {
+      const result = document.getElementById('result').innerText;
+      navigator.clipboard.writeText(result).then(() => {
+        alert('Đã sao chép kết quả!');
+      });
+    }
+  </script>
+</body>
+</html>
